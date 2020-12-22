@@ -1,4 +1,0 @@
-[D-BUS Service]
-Name=com.test.qt.systemdbus
-Exec=/usr/bin/launchSysDbustest
-User=root
