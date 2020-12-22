@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=com.ukui.backup.qt.systemdbus
+Exec=/usr/bin/ukui-backup-service
+User=root

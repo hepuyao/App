@@ -32,7 +32,7 @@ class SysdbusRegister : public QObject
 {
     Q_OBJECT
 
-    Q_CLASSINFO("D-Bus Interface", "com.test.interface")
+    Q_CLASSINFO("D-Bus Interface", "com.ukui.backup.interface")
 
 public:
     explicit SysdbusRegister();
