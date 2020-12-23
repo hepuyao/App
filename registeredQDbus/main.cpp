@@ -22,14 +22,46 @@
 #include <QDBusError>
 
 #include <QDebug>
-
+#include <QStandardPaths>
 #include "sysdbusregister.h"
+
+void outputMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+
+    QString txt;
+          switch (type) {
+          //调试信息提示
+          case QtDebugMsg:
+                  txt = QString("Debug: %1").arg(msg);
+                  break;
+
+          //一般的warning提示
+          case QtWarningMsg:
+                  txt = QString("Warning: %1").arg(msg);
+          break;
+          //严重错误提示
+          case QtCriticalMsg:
+                  txt = QString("Critical: %1").arg(msg);
+          break;
+          //致命错误提示
+          case QtFatalMsg:
+                  txt = QString("Fatal: %1").arg(msg);
+                  abort();
+          }
+    QFile outFile(qgetenv("HOME") +"/tmp/ukui-test.log");
+    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    QTextStream ts(&outFile);  //
+    ts << txt << endl;
+}
+
 
 int main(int argc, char *argv[]){
 
     QCoreApplication app(argc, argv);
     app.setOrganizationName("Kylin Team");
     app.setApplicationName("uktest-service");
+
+    qInstallMessageHandler(outputMessage);
 
 
     QDBusConnection systemBus = QDBusConnection::systemBus();

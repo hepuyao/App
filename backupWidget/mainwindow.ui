@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>323</width>
-    <height>227</height>
+    <width>332</width>
+    <height>213</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,53 +17,53 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>100</x>
       <y>0</y>
       <width>191</width>
       <height>71</height>
      </rect>
     </property>
     <property name="text">
-     <string>是否回滚</string>
+     <string>请选择是否回滚</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>40</x>
+      <x>20</x>
       <y>80</y>
       <width>96</width>
       <height>36</height>
      </rect>
     </property>
     <property name="text">
-     <string>是</string>
+     <string>确认回滚</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>170</x>
+      <x>200</x>
       <y>80</y>
       <width>96</width>
       <height>36</height>
      </rect>
     </property>
     <property name="text">
-     <string>否</string>
+     <string>取消并重启</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>120</y>
-      <width>161</width>
-      <height>36</height>
+      <x>120</x>
+      <y>100</y>
+      <width>81</width>
+      <height>71</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>TextLabel</string>
     </property>
    </widget>
   </widget>
@@ -72,7 +72,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>323</width>
+     <width>332</width>
      <height>36</height>
     </rect>
    </property>

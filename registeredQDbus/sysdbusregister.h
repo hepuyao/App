@@ -27,12 +27,13 @@
 #include <QSettings>
 #include <QDBusMessage>
 #include <QDBusConnection>
-
+#include <QMessageBox>
 class SysdbusRegister : public QObject
 {
     Q_OBJECT
 
     Q_CLASSINFO("D-Bus Interface", "com.ukui.backup.interface")
+//    Q_CLASSINFO("D-Bus Interface", "com.ukui.backup.plugins")
 
 public:
     explicit SysdbusRegister();
@@ -71,9 +72,12 @@ public slots:
     Q_SCRIPTABLE void modifyPropFile(QString,QString);
     // 删除grub
     Q_SCRIPTABLE void updateGrub();
+    // test
+    Q_SCRIPTABLE void test3(QString);
 
 private slots:
     void finished(int exitCode,QProcess::ExitStatus exitStatus);
+    void errorFound(QProcess::ProcessError exitStatus);
 };
 
 #endif // SYSDBUSREGISTER_H

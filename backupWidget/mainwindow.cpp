@@ -2,29 +2,32 @@
 #include "ui_mainwindow.h"
 #include <QDebug>
 #include <QProcess>
+#include <QMovie>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setWindowIcon(QIcon::fromTheme("distributor-logo-kylin"));
+    this->setWindowTitle("备份还原");
     connect(ui->pushButton,&QPushButton::clicked,[this]{
         animalionWidget();
 
-        QDBusInterface iface("com.test.qt.systemdbus",
+        QDBusInterface iface("com.ukui.backup.qt.systemdbus",
                              "/",
-                             "com.test.interface",
+                             "com.ukui.backup.interface",
                              QDBusConnection::systemBus());
-        iface.call("modifyPropFile","rollback","f");
+        iface.call("modifyPropFile","rollback","fase");
         iface.call("updateGrub");
     });
     connect(ui->pushButton_2,&QPushButton::clicked,[this]{
         system("reboot");
     });
 
-    QDBusConnection::sessionBus().connect(QString(), QString("/"), "com.ukui.backup.plugins", "sendToUkuiDEApp", this, SLOT(client_get()));
+    QDBusConnection::systemBus().connect(QString(), QString("/"), "com.ukui.backup.interface", "sendToUkuiDEApp", this, SLOT(client_get()));
 
-    ui->pushButton_3->setVisible(false);
+    ui->label_2->setVisible(false);
 
     timer=new QTimer;
     connect(timer,&QTimer::timeout,[this] {
@@ -40,13 +43,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::client_get()
 {
-    timer->stop();
-    ui->pushButton_3->setVisible(false);
+    ui->label_2->setVisible(false);
 }
 
 void MainWindow::animalionWidget()
 {
-    timer->stop();
-    ui->pushButton_3->setVisible(true);
-    ui->pushButton_3->setText(">>>>>>>>>>>>>>>>>");
+    ui->label_2->setVisible(true);
+
+    movie = new QMovie(":/loading.gif");
+
+    QTimer *movieTimer=new QTimer;
+    connect(movieTimer,&QTimer::timeout,[this] {
+        movie->stop();
+        ui->label_2->setVisible(false);
+    });
+
+    ui->label_2->setMovie(movie);
+
+    movie->setScaledSize(ui->label_2->size());
+    movie->start();
+
 }

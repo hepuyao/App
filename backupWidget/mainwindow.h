@@ -22,6 +22,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QTimer *timer;
+    QMovie *movie;
 
 private slots:
     void client_get();

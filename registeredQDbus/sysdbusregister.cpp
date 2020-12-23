@@ -31,9 +31,9 @@ SysdbusRegister::SysdbusRegister()
     mHibernateSet = new QSettings(mHibernateFile, QSettings::IniFormat, this);
     mHibernateSet->setIniCodec("UTF-8");
 
-    QDBusConnection::sessionBus().unregisterService("com.ukui.backup.plugins");
-    QDBusConnection::sessionBus().registerService("com.ukui.backup.plugins");
-    QDBusConnection::sessionBus().registerObject("/", this,QDBusConnection :: ExportAllSlots | QDBusConnection :: ExportAllSignals);
+//    QDBusConnection::sessionBus().unregisterService("com.ukui.backup.plugins");
+//    QDBusConnection::sessionBus().registerService("com.ukui.backup.plugins");
+//    QDBusConnection::sessionBus().registerObject("/", this,QDBusConnection :: ExportAllSlots | QDBusConnection :: ExportAllSignals);
 }
 
 SysdbusRegister::~SysdbusRegister()
@@ -129,7 +129,6 @@ void SysdbusRegister::setSuspendThenHibernate(QString time) {
 void SysdbusRegister::modifyPropFile(QString key,QString value) {
     QString modifyPropFileCmd="modifyPropFile %1 %2";
     modifyPropFileCmd=modifyPropFileCmd.arg(key).arg(value);
-
     char*  ch;
     QByteArray ba = modifyPropFileCmd.toLatin1();
     ch=ba.data();
@@ -139,14 +138,34 @@ void SysdbusRegister::modifyPropFile(QString key,QString value) {
 
 void SysdbusRegister::updateGrub() {
     QProcess *process = new QProcess();
-
-    process->start(QString("update-grub"));
+    process->start(QString("updateRollback"));
     connect(process,SIGNAL(finished(int,QProcess::ExitStatus)),SLOT(finished(int,QProcess::ExitStatus)));
+    QObject::connect(process, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(errorFound(QProcess::ProcessError)));
 }
 
 void SysdbusRegister::finished(int exitCode,QProcess::ExitStatus exitStatus)
 {
     /*创建QT的DBus信号*/
-    QDBusMessage message =QDBusMessage::createSignal("/", "com.ukui.backup.plugins", "sendToUkuiDEApp");
-    QDBusConnection::sessionBus().send(message);
+    QDBusMessage message =QDBusMessage::createSignal("/", "com.ukui.backup.interface", "sendToUkuiDEApp");
+    QDBusConnection::systemBus().send(message);
+}
+
+void SysdbusRegister::errorFound(QProcess::ProcessError exitStatus)
+{
+    QString filename="/tmp/update.txt";
+    QFile log( filename);
+    qDebug()<< "Error during Update: "<< exitStatus ;
+    if ( log.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Unbuffered | QIODevice::Text) )
+    {
+        QTextStream stream(&log);
+        stream << "Error:" << exitStatus << endl;
+        log.close();
+    }
+}
+
+void SysdbusRegister::test3(QString str) {
+    system("touch /tmp/202012231505test3");
+    QProcess *process = new QProcess();
+    process->start(QString("update-grub"));
+    connect(process,SIGNAL(finished(int,QProcess::ExitStatus)),SLOT(finished(int,QProcess::ExitStatus)));
 }
