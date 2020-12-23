@@ -31,8 +31,8 @@ SysdbusRegister::SysdbusRegister()
     mHibernateSet = new QSettings(mHibernateFile, QSettings::IniFormat, this);
     mHibernateSet->setIniCodec("UTF-8");
 
-    QDBusConnection::sessionBus().unregisterService("com.test.plugins");
-    QDBusConnection::sessionBus().registerService("com.test.plugins");
+    QDBusConnection::sessionBus().unregisterService("com.ukui.backup.plugins");
+    QDBusConnection::sessionBus().registerService("com.ukui.backup.plugins");
     QDBusConnection::sessionBus().registerObject("/", this,QDBusConnection :: ExportAllSlots | QDBusConnection :: ExportAllSignals);
 }
 
@@ -147,6 +147,6 @@ void SysdbusRegister::updateGrub() {
 void SysdbusRegister::finished(int exitCode,QProcess::ExitStatus exitStatus)
 {
     /*创建QT的DBus信号*/
-    QDBusMessage message =QDBusMessage::createSignal("/", "com.test.plugins", "sendToUkuiDEApp");
+    QDBusMessage message =QDBusMessage::createSignal("/", "com.ukui.backup.plugins", "sendToUkuiDEApp");
     QDBusConnection::sessionBus().send(message);
 }

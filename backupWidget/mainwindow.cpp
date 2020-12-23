@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
         system("reboot");
     });
 
-    QDBusConnection::sessionBus().connect(QString(), QString("/"), "com.test.plugins", "sendToUkuiDEApp", this, SLOT(client_get()));
+    QDBusConnection::sessionBus().connect(QString(), QString("/"), "com.ukui.backup.plugins", "sendToUkuiDEApp", this, SLOT(client_get()));
 
     ui->pushButton_3->setVisible(false);
 
