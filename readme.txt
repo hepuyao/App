@@ -1,0 +1,11 @@
+registerQDbus.pro 
+实现的是注册dbus后端接口
+
+modifyPropFile
+updateGrub
+两个接口提供给backupWidget调用
+updateGrub完成的时候会发出sendToUkuiDEApp信号
+
+backupWidget 实现的功能有：
+点击确认，调用modifyPropFile updateGrub 接口并显示动画
+当监听到sendToUkuiDEApp信号说明update-grup结束，动画停止

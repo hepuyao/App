@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowIcon(QIcon::fromTheme("distributor-logo-kylin"));
     this->setWindowTitle("备份还原");
     setAttribute(Qt::WA_TranslucentBackground);
+    this->setWindowFlags(Qt::FramelessWindowHint);//去掉标题栏
     initWidget();
 }
 
@@ -72,6 +73,15 @@ void MainWindow::initWidget()
     connect(ui->pushButton_2,&QPushButton::clicked,[this]{
         system("reboot");
     });
+
+    connect(ui->pushButton_4,&QPushButton::clicked,[this]{
+        onMin(true);
+    });
+    connect(ui->pushButton_5,&QPushButton::clicked,[this]{
+        onClose(true);
+    });
+
+
 
     QDBusConnection::systemBus().connect(QString(), QString("/"), "com.ukui.backup.interface", "UpdateGrubFinished", this, SLOT(client_get()));
 
