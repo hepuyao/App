@@ -4,6 +4,11 @@
 #include <QProcess>
 #include <QMovie>
 
+
+#define TRANSPARENCY_SETTINGS       "org.ukui.control-center.personalise"
+#define TRANSPARENCY_KEY            "transparency"
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -11,6 +16,49 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     this->setWindowIcon(QIcon::fromTheme("distributor-logo-kylin"));
     this->setWindowTitle("备份还原");
+    setAttribute(Qt::WA_TranslucentBackground);
+    initWidget();
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::initWidget()
+{
+
+    ui->pushButton->setText("确认回滚");
+    //    ui->pushButton->adjustSize();
+    //    QFont font_title("Microsoft YaHei", 14, 75);
+    //    ui->pushButton->setFont(font_title);
+
+
+    ui->pushButton_3->setIcon(QIcon::fromTheme("distributor-logo-kylin"));
+    ui->pushButton_3->setFixedSize(30, 30);
+    ui->pushButton_3->setIconSize(QSize(24, 24));
+    ui->pushButton_3->setProperty("isWindowButton", 0x1);
+    ui->pushButton_3->setProperty("useIconHighlightEffect", 0x2);
+    ui->pushButton_3->setFlat(true);
+
+    ui->label_3->setText("备份还原");
+
+    ui->pushButton_4->setIcon(QIcon::fromTheme("window-minimize-symbolic"));
+    ui->pushButton_4->setFixedSize(30, 30);
+    ui->pushButton_4->setIconSize(QSize(16, 16));
+    ui->pushButton_4->setProperty("isWindowButton", 0x1);
+    ui->pushButton_4->setProperty("useIconHighlightEffect", 0x2);
+    ui->pushButton_4->setFlat(true);
+
+    ui->pushButton_5->setIcon(QIcon::fromTheme("window-close-symbolic"));
+    ui->pushButton_5->setFixedSize(30, 30);
+    ui->pushButton_5->setIconSize(QSize(16, 16));
+    ui->pushButton_5->setProperty("isWindowButton", 0x2);
+    ui->pushButton_5->setProperty("useIconHighlightEffect", 0x8);
+    ui->pushButton_5->setFlat(true);
+
+
+
     connect(ui->pushButton,&QPushButton::clicked,[this]{
         animalionWidget();
 
@@ -25,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent)
         system("reboot");
     });
 
-    QDBusConnection::systemBus().connect(QString(), QString("/"), "com.ukui.backup.interface", "sendToUkuiDEApp", this, SLOT(client_get()));
+    QDBusConnection::systemBus().connect(QString(), QString("/"), "com.ukui.backup.interface", "UpdateGrubFinished", this, SLOT(client_get()));
 
     ui->label_2->setVisible(false);
 
@@ -34,13 +82,37 @@ MainWindow::MainWindow(QWidget *parent)
         QApplication::exit();
     });
     timer->start(300000);
+
+    const QByteArray transparency_id(TRANSPARENCY_SETTINGS);
+    if(QGSettings::isSchemaInstalled(transparency_id)){
+        transparency_gsettings = new QGSettings(transparency_id);
+        //setPanelBackground(true);
+    }
+    connect(transparency_gsettings, &QGSettings::changed, this, [=] (const QString &key){
+        if(key==TRANSPARENCY_KEY)
+        {
+            //setPanelBackground(true);
+            this->update();
+        }
+    });
 }
 
-MainWindow::~MainWindow()
+void MainWindow::paintEvent(QPaintEvent *)
 {
-    delete ui;
-}
+    QStyleOption opt;
+    opt.init(this);
+    QPainter p(this);
+    p.setPen(Qt::NoPen);
+    double tran=transparency_gsettings->get(TRANSPARENCY_KEY).toDouble()*255;
+    QColor color = palette().color(QPalette::Base);
+    color.setAlpha(tran);
+    QBrush brush =QBrush(color);
+    p.setBrush(brush);
 
+    p.setRenderHint(QPainter::Antialiasing);
+    p.drawRoundedRect(opt.rect,12,12);
+    style()->drawPrimitive(QStyle::PE_Widget, &opt, &p, this);
+}
 void MainWindow::client_get()
 {
     ui->label_2->setVisible(false);
@@ -63,4 +135,22 @@ void MainWindow::animalionWidget()
     movie->setScaledSize(ui->label_2->size());
     movie->start();
 
+}
+
+
+void MainWindow::onMin(bool)
+{
+    if( windowState() != Qt::WindowMinimized ){
+        setWindowState( Qt::WindowMinimized );
+    }
+}
+
+void MainWindow::onMaxOrNormal(bool)
+{
+    setWindowState( Qt::WindowMaximized );
+}
+
+void MainWindow::onClose(bool)
+{
+    close();
 }

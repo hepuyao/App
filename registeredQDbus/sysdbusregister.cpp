@@ -146,7 +146,7 @@ void SysdbusRegister::updateGrub() {
 void SysdbusRegister::finished(int exitCode,QProcess::ExitStatus exitStatus)
 {
     /*创建QT的DBus信号*/
-    QDBusMessage message =QDBusMessage::createSignal("/", "com.ukui.backup.interface", "sendToUkuiDEApp");
+    QDBusMessage message =QDBusMessage::createSignal("/", "com.ukui.backup.interface", "UpdateGrubFinished");
     QDBusConnection::systemBus().send(message);
 }
 

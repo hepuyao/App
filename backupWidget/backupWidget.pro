@@ -1,4 +1,4 @@
-QT       += core gui dbus
+QT       += core gui dbus KWindowSystem
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -24,6 +24,9 @@ HEADERS += \
 
 FORMS += \
     mainwindow.ui
+
+PKGCONFIG+=glib-2.0 gio-unix-2.0 gsettings-qt
+CONFIG += no_keywords link_pkgconfig
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
