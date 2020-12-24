@@ -1,4 +1,4 @@
-QT       += core gui dbus KWindowSystem
+QT       += core gui dbus KWindowSystem x11extras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -17,13 +17,19 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    xatom-helper.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    xatom-helper.h
 
 FORMS += \
     mainwindow.ui
+
+# 适配窗口管理器圆角阴影
+LIBS +=-lpthread
+LIBS +=-lX11
 
 PKGCONFIG+=glib-2.0 gio-unix-2.0 gsettings-qt
 CONFIG += no_keywords link_pkgconfig

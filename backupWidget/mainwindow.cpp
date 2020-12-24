@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowIcon(QIcon::fromTheme("distributor-logo-kylin"));
     this->setWindowTitle("备份还原");
     setAttribute(Qt::WA_TranslucentBackground);
-    this->setWindowFlags(Qt::FramelessWindowHint);//去掉标题栏
+//    this->setWindowFlags(Qt::FramelessWindowHint);//去掉标题栏
     initWidget();
 
     ui->menubar->setVisible(false);
@@ -30,6 +30,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::initWidget()
 {
+
+    ui->label->setText("请选择是否回滚");
+//    ui->label->adjustSize();
+//    ui->label->setWordWrap(false);
+//    ui->label->setAlignment(Qt::AlignLeft);
+//    QFont font;
+//    font.setPointSize(13);
+//    ui->label->setFont(font);
 
     ui->pushButton->setText("确认回滚");
     //    ui->pushButton->adjustSize();
@@ -134,7 +142,7 @@ void MainWindow::animalionWidget()
 {
     ui->label_2->setVisible(true);
 
-    movie = new QMovie(":/loading.gif");
+    movie = new QMovie(":/load.gif");
 
     QTimer *movieTimer=new QTimer;
     connect(movieTimer,&QTimer::timeout,[this] {
