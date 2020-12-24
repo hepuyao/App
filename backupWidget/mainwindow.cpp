@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground);
     this->setWindowFlags(Qt::FramelessWindowHint);//去掉标题栏
     initWidget();
+
+    ui->menubar->setVisible(false);
 }
 
 MainWindow::~MainWindow()
