@@ -28,6 +28,21 @@ public:
      * 初始化widget
      */
     void initWidget();
+    /**
+     * @brief initTitleBar
+     * 初始化标题栏
+     */
+    void initTitleBar();
+    /**
+     * @brief connectButtonClicked
+     * 按钮点击
+     */
+    void connectButtonClicked();
+    /**
+     * @brief widgetPaint
+     * 界面绘制
+     */
+    void widgetPaint();
 
 protected:
     void paintEvent(QPaintEvent *);
@@ -40,10 +55,18 @@ private:
     QGSettings *transparency_gsettings;
 
 private Q_SLOTS:
+    /**
+     * @brief client_get
+     * 监听更新grub更新完成的信号，loading界面消失
+     */
     void client_get();
+    /**
+     * @brief animalionWidget
+     * 更新过程中的动画效果
+     */
     void animalionWidget();
 
-    //button
+    //按钮的最大化，最小化，关闭选项
     void onMin( bool );
     void onMaxOrNormal( bool );
     void onClose( bool );

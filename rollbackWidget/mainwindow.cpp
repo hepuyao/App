@@ -14,13 +14,16 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    /*
+     *  在这里仍然设置了窗口图标和标题，但实际上已经重新绘了标题栏
+     *  这里不需要设置去掉标题栏属性的原因是窗管已经处理了
+     *  this->setWindowFlags(Qt::FramelessWindowHint);//去掉标题栏
+    */
     this->setWindowIcon(QIcon::fromTheme("distributor-logo-kylin"));
     this->setWindowTitle("备份还原");
-    setAttribute(Qt::WA_TranslucentBackground);
-//    this->setWindowFlags(Qt::FramelessWindowHint);//去掉标题栏
-    initWidget();
 
-    ui->menubar->setVisible(false);
+    setAttribute(Qt::WA_TranslucentBackground);
+    initWidget();
 }
 
 MainWindow::~MainWindow()
@@ -30,19 +33,30 @@ MainWindow::~MainWindow()
 
 void MainWindow::initWidget()
 {
+    initTitleBar();
+    connectButtonClicked();
+    widgetPaint();
 
+
+    QDBusConnection::systemBus().connect(QString(), QString("/"), "com.ukui.backup.interface", "UpdateGrubFinished", this, SLOT(client_get()));
+
+    ui->label_2->setVisible(false);
+
+    timer=new QTimer;
+    connect(timer,&QTimer::timeout,[this] {
+        QApplication::exit();
+    });
+    timer->start(300000);
+
+
+}
+
+void MainWindow::initTitleBar()
+{
+    ui->menubar->setVisible(false);
     ui->label->setText("请选择是否回滚");
-//    ui->label->adjustSize();
-//    ui->label->setWordWrap(false);
-//    ui->label->setAlignment(Qt::AlignLeft);
-//    QFont font;
-//    font.setPointSize(13);
-//    ui->label->setFont(font);
 
     ui->pushButton->setText("确认回滚");
-    //    ui->pushButton->adjustSize();
-    //    QFont font_title("Microsoft YaHei", 14, 75);
-    //    ui->pushButton->setFont(font_title);
 
 
     ui->pushButton_3->setIcon(QIcon::fromTheme("distributor-logo-kylin"));
@@ -67,9 +81,10 @@ void MainWindow::initWidget()
     ui->pushButton_5->setProperty("isWindowButton", 0x2);
     ui->pushButton_5->setProperty("useIconHighlightEffect", 0x8);
     ui->pushButton_5->setFlat(true);
+}
 
-
-
+void MainWindow::connectButtonClicked()
+{
     connect(ui->pushButton,&QPushButton::clicked,[this]{
         animalionWidget();
 
@@ -91,18 +106,10 @@ void MainWindow::initWidget()
         onClose(true);
     });
 
+}
 
-
-    QDBusConnection::systemBus().connect(QString(), QString("/"), "com.ukui.backup.interface", "UpdateGrubFinished", this, SLOT(client_get()));
-
-    ui->label_2->setVisible(false);
-
-    timer=new QTimer;
-    connect(timer,&QTimer::timeout,[this] {
-        QApplication::exit();
-    });
-    timer->start(300000);
-
+void MainWindow::widgetPaint()
+{
     const QByteArray transparency_id(TRANSPARENCY_SETTINGS);
     if(QGSettings::isSchemaInstalled(transparency_id)){
         transparency_gsettings = new QGSettings(transparency_id);
@@ -141,23 +148,19 @@ void MainWindow::client_get()
 void MainWindow::animalionWidget()
 {
     ui->label_2->setVisible(true);
-
     movie = new QMovie(":/load.gif");
-
     QTimer *movieTimer=new QTimer;
     connect(movieTimer,&QTimer::timeout,[this] {
         movie->stop();
         ui->label_2->setVisible(false);
     });
-
     ui->label_2->setMovie(movie);
-
     movie->setScaledSize(ui->label_2->size());
     movie->start();
 
 }
 
-
+//按钮的最大化，最小化，关闭选项
 void MainWindow::onMin(bool)
 {
     if( windowState() != Qt::WindowMinimized ){
