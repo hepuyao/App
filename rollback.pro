@@ -4,4 +4,4 @@ CONFIG += ordered
 
 SUBDIRS = \
     registeredQDbus \
-    backupWidget  \
+    rollbackWidget  \
