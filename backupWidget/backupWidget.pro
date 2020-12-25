@@ -35,8 +35,8 @@ PKGCONFIG+=glib-2.0 gio-unix-2.0 gsettings-qt
 CONFIG += no_keywords link_pkgconfig
 
 # Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
+qnx: target.path = /usr/bin
+else: unix:!android: target.path = /usr/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
