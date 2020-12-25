@@ -1,10 +1,12 @@
-ukui-rollback (0.0.1-2) v101; urgency=medium
+kylin-rollback (0.0.1-2) v101; urgency=medium
 
   * ukui-rollback 初次打包上传
+    dbus 后端 ：com.ukui.backup.qt.systemdbus.service
+    回滚界面  ：/usr/bin/rollbackWidget
 
  -- hepuyao <hepuyao@kylinos.cn>  Fri, 25 Dec 2020 16:00:50 +0800
 
-ukui-rollback (0.0.1-1) v101; urgency=medium
+kylin-rollback (0.0.1-1) v101; urgency=medium
 
   * ukui-rollback
 
