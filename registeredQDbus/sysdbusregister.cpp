@@ -63,69 +63,6 @@ QString SysdbusRegister::GetComputerInfo() {
     return QString(ba);
 }
 
-//获取免密登录状态
-QString SysdbusRegister::getNoPwdLoginStatus(){
-    QByteArray ba;
-    FILE * fp = NULL;
-    char cmd[128];
-    char buf[1024];
-    sprintf(cmd, "cat /etc/group |grep nopasswdlogin");
-    if ((fp = popen(cmd, "r")) != NULL){
-        rewind(fp);
-        fgets(buf, sizeof (buf), fp);
-        ba.append(buf);
-        pclose(fp);
-        fp = NULL;
-    }else{
-        qDebug()<<"popen文件打开失败"<<endl;
-    }
-    return QString(ba);
-}
-
-//设置免密登录状态
-void SysdbusRegister::setNoPwdLoginStatus(bool status,QString username) {
-
-    QString cmd;
-    if(true == status){
-         cmd = QString("gpasswd  -a %1 nopasswdlogin").arg(username);
-    } else{
-        cmd = QString("gpasswd  -d %1 nopasswdlogin").arg(username);
-    }
-    QProcess::execute(cmd);
-}
-
-// 设置自动登录状态
-void SysdbusRegister::setAutoLoginStatus(QString username) {
-    QString filename = "/etc/lightdm/lightdm.conf";
-    QSharedPointer<QSettings>  autoSettings = QSharedPointer<QSettings>(new QSettings(filename, QSettings::IniFormat));
-    autoSettings->beginGroup("SeatDefaults");
-
-    autoSettings->setValue("autologin-user", username);
-
-    autoSettings->endGroup();
-    autoSettings->sync();
-}
-
-QString SysdbusRegister::getSuspendThenHibernate() {
-    mHibernateSet->beginGroup("Sleep");
-
-    QString time = mHibernateSet->value("HibernateDelaySec").toString();
-
-    mHibernateSet->endGroup();
-    mHibernateSet->sync();
-
-    return time;
-}
-
-void SysdbusRegister::setSuspendThenHibernate(QString time) {
-    mHibernateSet->beginGroup("Sleep");
-
-    mHibernateSet->setValue("HibernateDelaySec", time);
-
-    mHibernateSet->endGroup();
-    mHibernateSet->sync();
-}
-
 void SysdbusRegister::modifyPropFile(QString key,QString value) {
     QString modifyPropFileCmd="modifyPropFile %1 %2";
     modifyPropFileCmd=modifyPropFileCmd.arg(key).arg(value);
@@ -140,7 +77,6 @@ void SysdbusRegister::updateGrub() {
     QProcess *process = new QProcess();
     process->start(QString("updateRollback"));
     connect(process,SIGNAL(finished(int,QProcess::ExitStatus)),SLOT(finished(int,QProcess::ExitStatus)));
-    QObject::connect(process, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(errorFound(QProcess::ProcessError)));
 }
 
 void SysdbusRegister::finished(int exitCode,QProcess::ExitStatus exitStatus)
@@ -150,22 +86,80 @@ void SysdbusRegister::finished(int exitCode,QProcess::ExitStatus exitStatus)
     QDBusConnection::systemBus().send(message);
 }
 
-void SysdbusRegister::errorFound(QProcess::ProcessError exitStatus)
+bool SysdbusRegister::RdmssMount()
 {
-    QString filename="/tmp/update.txt";
-    QFile log( filename);
-    qDebug()<< "Error during Update: "<< exitStatus ;
-    if ( log.open(QIODevice::WriteOnly | QIODevice::Append | QIODevice::Unbuffered | QIODevice::Text) )
-    {
-        QTextStream stream(&log);
-        stream << "Error:" << exitStatus << endl;
-        log.close();
+//    system("kylin-rdmss-tools mount");
+    FILE *fp=popen("kylin-rdmss-tools mount","r");
+    char *cur_system_uuid;
+    if (fp) {
+        fgets(cur_system_uuid, 1024, fp);
     }
+    if(strcmp(cur_system_uuid,"\n")==0) return true;
+    else return false;
+
 }
 
-void SysdbusRegister::test3(QString str) {
-    system("touch /tmp/202012231505test3");
+void SysdbusRegister::RdmssUmount()
+{
+    system("kylin-rdmss-tools umount");
+}
+void SysdbusRegister::RdmssMerge(QString str1,QString str2)
+{
+    QString mergeCmd="kylin-rdmss-tools merge %1 %2";
+    system(mergeCmd.arg(str1).arg(str2).toLatin1().data());
+}
+void SysdbusRegister::RdmssCreate()
+{
+    system("kylin-rdmss-tools create");
+}
+void SysdbusRegister::RdmssRestore(QString str1,QString str2)
+{
+    QString restoreCmd="kylin-rdmss-tools restore %1 %2";
+    system(restoreCmd.arg(str1).arg(str2).toLatin1().data());
+}
+void SysdbusRegister::RdmssChain()
+{
+    system("kylin-rdmss-tools chain");
+}
+
+void SysdbusRegister::RdmssDetails()
+{
+    system("kylin-rdmss-tools details");
+}
+QString SysdbusRegister::RdmssGetKey(QString str)
+{
+    char cmd[1024]={0};
+    char line[1024]={0};
+
+    char*  ch;
+    ch=str.toLatin1().data();
+    snprintf(cmd,1024,"kylin-rdmss-tools getkey -k %s",ch);
+    FILE *fp=popen(cmd,"r");
+    if (fp) {
+        fgets(line, 1024, fp);
+        line[strlen(line)-1]='\0';
+    }
+    pclose(fp);
+    QByteArray ba;
+    ba.append(line);
+    return QString(ba);
+}
+
+void SysdbusRegister::RdmssSetkey(QString str1,QString str2)
+{
+    QString setKeyCmd="kylin-rdmss-tools setkey -k %1  -v %2";
+    system(setKeyCmd.arg(str1).arg(str2).toLatin1().data());
+}
+
+void SysdbusRegister::RdmssUpdate()
+{
+//    system("kylin-rdmss-tools update");
     QProcess *process = new QProcess();
-    process->start(QString("update-grub"));
+    process->start(QString("kylin-rdmss-tools update"));
     connect(process,SIGNAL(finished(int,QProcess::ExitStatus)),SLOT(finished(int,QProcess::ExitStatus)));
+}
+
+void SysdbusRegister::RdmssInit()
+{
+    system("kylin-rdmss-tools init");
 }

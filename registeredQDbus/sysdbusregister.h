@@ -28,12 +28,13 @@
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <QMessageBox>
+
+#include <stdio.h>
 class SysdbusRegister : public QObject
 {
     Q_OBJECT
 
     Q_CLASSINFO("D-Bus Interface", "com.ukui.backup.interface")
-//    Q_CLASSINFO("D-Bus Interface", "com.ukui.backup.plugins")
 
 public:
     explicit SysdbusRegister();
@@ -53,31 +54,36 @@ public slots:
     Q_SCRIPTABLE void exitService();
     Q_SCRIPTABLE QString GetComputerInfo();
 
-    // 设置免密登录状态
-    Q_SCRIPTABLE void setNoPwdLoginStatus(bool status,QString username);
-
-    // 获取免密登录状态
-    Q_SCRIPTABLE QString getNoPwdLoginStatus();
-
-    // 设置自动登录状态
-    Q_SCRIPTABLE void setAutoLoginStatus(QString username);
-
-    // 获取挂起到休眠时间
-    Q_SCRIPTABLE QString getSuspendThenHibernate();
-
-    // 设置挂起到休眠时间
-    Q_SCRIPTABLE void setSuspendThenHibernate(QString time);
-
     // 修改日志文件
     Q_SCRIPTABLE void modifyPropFile(QString,QString);
     // 删除grub
     Q_SCRIPTABLE void updateGrub();
-    // test
-    Q_SCRIPTABLE void test3(QString);
+	//挂载
+    Q_SCRIPTABLE bool RdmssMount();
+    //卸载
+    Q_SCRIPTABLE void RdmssUmount();
+    //合并
+    Q_SCRIPTABLE void RdmssMerge(QString , QString );
+    //创建
+    Q_SCRIPTABLE void RdmssCreate();
+    //恢复
+    Q_SCRIPTABLE void RdmssRestore(QString , QString );
+    //
+    Q_SCRIPTABLE void RdmssChain();
+    //
+    Q_SCRIPTABLE void RdmssDetails();
+    //
+    Q_SCRIPTABLE QString RdmssGetKey(QString);
+    //
+    Q_SCRIPTABLE void RdmssSetkey(QString , QString);
+    //更新
+    Q_SCRIPTABLE void RdmssUpdate();
+    //初始化
+    Q_SCRIPTABLE void RdmssInit();
+
 
 private slots:
     void finished(int exitCode,QProcess::ExitStatus exitStatus);
-    void errorFound(QProcess::ProcessError exitStatus);
 };
 
 #endif // SYSDBUSREGISTER_H

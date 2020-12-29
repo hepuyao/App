@@ -92,8 +92,11 @@ void MainWindow::connectButtonClicked()
                              "/",
                              "com.ukui.backup.interface",
                              QDBusConnection::systemBus());
-        iface.call("modifyPropFile","rollback","fase");
-        iface.call("updateGrub");
+        iface.call("RdmssMount");
+        iface.call("RdmssSetkey","rollback","false");
+        iface.call("RdmssSetkey","active_B","true");
+        iface.call("RdmssSetkey","bootable_B","true");
+        iface.call("RdmssUpdate");
     });
     connect(ui->pushButton_2,&QPushButton::clicked,[this]{
         system("reboot");

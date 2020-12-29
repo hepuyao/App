@@ -2,13 +2,11 @@ Source: kylin-rollback
 Section: x11
 Priority: optional
 Maintainer: Kylin Team <team+kylin@tracker.debian.org>
-Uploaders: Aron Xu <aron@debian.org>,
-           handsome_feng <jianfengli@ubuntukylin.com>
+Uploaders: hepuyao <hepuyao@kylinos.cn>
 Build-Depends: debhelper-compat (=12),
                qtbase5-dev,
                libqt5svg5-dev,
                libqt5x11extras5-dev,
-               libglib2.0-dev (>= 2.36),
                libgsettings-qt-dev,
                qttools5-dev-tools,
                libbamf3-dev,
@@ -18,9 +16,9 @@ Build-Depends: debhelper-compat (=12),
                libkf5windowsystem-dev,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
-Homepage: https://github.com/ukui/ukui-menu
-Vcs-Git: https://github.com/ukui/ukui-menu
-Vcs-Browser: https://github.com/ukui/ukui-menu
+Homepage: https://github.com/ukui
+Vcs-Git: https://github.com/ukui
+Vcs-Browser: https://github.com/ukui
 
 Package: kylin-rollback
 Architecture: any
@@ -33,8 +31,4 @@ Depends: ${shlibs:Depends},
          libxrandr2,
          libxtst6,
          libx11-6
-Description: Advanced ukui menu
- UKUI menu provides start menu development library and advanced
- graphical user interface.
- .
- The package contains executable file.
+Description: ukui rollback
