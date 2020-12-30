@@ -41,18 +41,14 @@ public:
     ~SysdbusRegister();
 
 private:
-    QString mHibernateFile;
-
-    QSettings *mHibernateSet;
 
 signals:
     Q_SCRIPTABLE void nameChanged(QString);
-    Q_SCRIPTABLE void computerinfo(QString);
+//    Q_SCRIPTABLE void computerinfo(QString);
 
 public slots:
 
     Q_SCRIPTABLE void exitService();
-    Q_SCRIPTABLE QString GetComputerInfo();
 
     // 修改日志文件
     Q_SCRIPTABLE void modifyPropFile(QString,QString);

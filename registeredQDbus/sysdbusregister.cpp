@@ -27,13 +27,6 @@
 
 SysdbusRegister::SysdbusRegister()
 {
-    mHibernateFile = "/etc/systemd/sleep.conf";
-    mHibernateSet = new QSettings(mHibernateFile, QSettings::IniFormat, this);
-    mHibernateSet->setIniCodec("UTF-8");
-
-//    QDBusConnection::sessionBus().unregisterService("com.ukui.backup.plugins");
-//    QDBusConnection::sessionBus().registerService("com.ukui.backup.plugins");
-//    QDBusConnection::sessionBus().registerObject("/", this,QDBusConnection :: ExportAllSlots | QDBusConnection :: ExportAllSignals);
 }
 
 SysdbusRegister::~SysdbusRegister()
@@ -44,24 +37,24 @@ void SysdbusRegister::exitService() {
     qApp->exit(0);
 }
 
-QString SysdbusRegister::GetComputerInfo() {
-    QByteArray ba;
-    FILE * fp = NULL;
-    char cmd[128];
-    char buf[1024];
-    sprintf(cmd, "dmidecode -t system");
+//QString SysdbusRegister::GetComputerInfo() {
+//    QByteArray ba;
+//    FILE * fp = NULL;
+//    char cmd[128];
+//    char buf[1024];
+//    sprintf(cmd, "dmidecode -t system");
 
-    if ((fp = popen(cmd, "r")) != NULL){
-        rewind(fp);
-        while (!feof(fp)) {
-            fgets(buf, sizeof (buf), fp);
-            ba.append(buf);
-        }
-        pclose(fp);
-        fp = NULL;
-    }
-    return QString(ba);
-}
+//    if ((fp = popen(cmd, "r")) != NULL){
+//        rewind(fp);
+//        while (!feof(fp)) {
+//            fgets(buf, sizeof (buf), fp);
+//            ba.append(buf);
+//        }
+//        pclose(fp);
+//        fp = NULL;
+//    }
+//    return QString(ba);
+//}
 
 void SysdbusRegister::modifyPropFile(QString key,QString value) {
     QString modifyPropFileCmd="modifyPropFile %1 %2";
