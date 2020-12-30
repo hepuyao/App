@@ -1,3 +1,9 @@
+kylin-rollback (0.0.1-3) v101; urgency=medium
+
+  * dbus接口重命名
+
+ -- hepuyao <hepuyao@kylinos.cn>  Wed, 30 Dec 2020 09:21:25 +0800
+
 kylin-rollback (0.0.1-2) v101; urgency=medium
 
   * ukui-rollback 初次打包上传
